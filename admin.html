@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ケアモコ 管理者ページ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #fff7e9;
+      padding: 1rem;
+    }
+
+    .box {
+      max-width: 600px;
+      margin: auto;
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      border: 2px solid #f0d9c7;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.6rem;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 0.7rem 1rem;
+      background: #ffb3c1;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="login" class="box">
+  <h2>管理者ログイン</h2>
+  <input id="password" type="password" placeholder="パスワード">
+  <button onclick="login()">ログイン</button>
+  <p>※パスワード：caremoko2026</p>
+</div>
+
+<div id="admin" class="box" style="display:none;">
+  <h2>管理者ページ</h2>
+
+  <h3>FAQ追加</h3>
+  <input id="faq-q" placeholder="質問">
+  <textarea id="faq-a" placeholder="答え"></textarea>
+  <input id="faq-keywords" placeholder="検索キーワード（カンマ区切り）">
+  <button onclick="addFAQ()">FAQを追加してJSONダウンロード</button>
+
+  <hr>
+
+  <h3>お客様の声追加</h3>
+  <input id="review-name" placeholder="投稿者">
+  <textarea id="review-text" placeholder="コメント"></textarea>
+  <button onclick="addReview()">レビューを追加してJSONダウンロード</button>
+</div>
+
+<script>
+  function login() {
+    if (document.getElementById("password").value === "caremoko2026") {
+      document.getElementById("login").style.display = "none";
+      document.getElementById("admin").style.display = "block";
+    } else {
+      alert("パスワードが違います");
+    }
+  }
+
+  function addFAQ() {
+    const q = faq-q.value.trim();
+    const a = faq-a.value.trim();
+    const kw = faq-keywords.value.trim().split(",").map(s => s.trim());
+
+    fetch("data/faq.json")
+      .then(res => res.json())
+      .catch(() => [])
+      .then(data => {
+        data.push({ q, a, keywords: kw });
+        downloadJSON("faq.json", data);
+      });
+  }
+
+  function addReview() {
+    const name = review-name.value.trim();
+    const text = review-text.value.trim();
+
+    fetch("data/reviews.json")
+      .then(res => res.json())
+      .catch(() => [])
+      .then(data => {
+        data.push({ name, text });
+        downloadJSON("reviews.json", data);
+      });
+  }
+
+  function downloadJSON(filename, data) {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+  }
+</script>
+
+</body>
+</html>
