@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ケアモコ ヘルプポータル</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #fff7e9;
+      padding: 1rem;
+    }
+
+    .help-img {
+      width: 180px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      background: #fffdf8;
+      border-radius: 1rem;
+      border: 2px solid #f0d9c7;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .nav-button {
+      padding: 0.6rem 1rem;
+      border-radius: 999px;
+      background: #ffb3c1;
+      text-decoration: none;
+      color: #000;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+
+<img src="img/kuma-help.png" class="help-img">
+<h1 style="text-align:center;">ヘルプポータル</h1>
+
+<a href="./index.html" class="nav-button">トップへ戻る</a>
+
+<input id="search-box" type="text" placeholder="質問を検索…" oninput="searchFAQ()" style="width:100%;padding:0.8rem;border-radius:0.5rem;border:1px solid #ccc;">
+
+<div id="faq-section">読み込み中…</div>
+
+<script>
+  let faqList = [];
+
+  function renderFAQ(list) {
+    const box = document.getElementById("faq-section");
+    box.innerHTML = "";
+    if (!list.length) {
+      box.innerHTML = "<p>FAQがありません。</p>";
+      return;
+    }
+    list.forEach(f => {
+      const div = document.createElement("div");
+      div.className = "faq-item";
+      div.innerHTML = `<h3>Q. ${f.q}</h3><p>${f.a}</p>`;
+      box.appendChild(div);
+    });
+  }
+
+  function searchFAQ() {
+    const keyword = document.getElementById("search-box").value.toLowerCase();
+    const results = faqList.filter(f =>
+      f.q.toLowerCase().includes(keyword) ||
+      (f.keywords || []).some(k => k.toLowerCase().includes(keyword))
+    );
+    renderFAQ(results);
+  }
+
+  fetch("data/faq.json")
+    .then(res => res.json())
+    .then(data => {
+      faqList = data;
+      renderFAQ(faqList);
+    });
+</script>
+
+</body>
+</html>
