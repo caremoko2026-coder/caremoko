@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ケアモコ公式サイト</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root {
+      --bg-main: #fff7e9;
+      --accent: #ffb3c1;
+      --accent-strong: #ff6f91;
+      --text-main: #333;
+      --text-sub: #666;
+      --card-bg: #ffffff;
+      --border-soft: #f0d9c7;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(255,247,233,0.95);
+      border-bottom: 1px solid var(--border-soft);
+      padding: 0.5rem 1rem;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1080px;
+      margin: auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-main {
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .nav-button {
+      padding: 0.6rem 1rem;
+      border-radius: 999px;
+      background: var(--accent);
+      text-decoration: none;
+      color: #000;
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    main {
+      max-width: 1080px;
+      margin: auto;
+      padding: 1rem;
+    }
+
+    section {
+      background: var(--card-bg);
+      border: 2px solid var(--border-soft);
+      border-radius: 1.2rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero-img {
+      width: 200px;
+      display: block;
+      margin: 0 auto 1rem;
+    }
+
+    .mvv-card img {
+      width: 120px;
+      display: block;
+      margin: 0 auto 1rem;
+    }
+
+    .product-img {
+      width: 180px;
+      display: block;
+      margin: 1rem auto;
+    }
+
+    .review-card {
+      background: #fffdf8;
+      border-radius: 1rem;
+      border: 2px solid var(--border-soft);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      color: var(--text-sub);
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-main">ケアモコ</div>
+    <nav>
+      <button class="nav-button" onclick="scrollToSection('hero')">ホーム</button>
+      <button class="nav-button" onclick="scrollToSection('company')">会社概要</button>
+      <button class="nav-button" onclick="scrollToSection('mvv')">MVV</button>
+      <button class="nav-button" onclick="scrollToSection('product')">商品紹介</button>
+      <button class="nav-button" onclick="scrollToSection('reviews')">レビュー</button>
+      <a href="./help.html" class="nav-button">ヘルプ</a>
+      <a href="./admin.html" class="nav-button">管理者</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section id="hero">
+    <img src="img/kuma-hero.png" class="hero-img">
+    <h1>現場の「こまった」を、「よかった」に変える。</h1>
+    <p>医療・介護・保育・障がいをつなぐ、やさしい福祉ブランド「ケアモコ」。</p>
+  </section>
+
+  <section id="company">
+    <h2>会社概要</h2>
+    <p>ケアモコは、医療・介護・保育・障がいの4つの現場をつなぎ、現場の「こまった」を「よかった」に変えるモノづくりを行うブランドです。</p>
+  </section>
+
+  <section id="mvv">
+    <h2>MVV</h2>
+    <div class="mvv-card">
+      <img src="img/kuma-mission.png">
+      <h3>Mission</h3>
+      <p>現場の「こまった」を「よかった」に変えるモノづくり。</p>
+    </div>
+
+    <div class="mvv-card">
+      <img src="img/kuma-vision.png">
+      <h3>Vision</h3>
+      <p>ケアする人も、される人も、心地よく笑顔でいられる未来へ。</p>
+    </div>
+
+    <div class="mvv-card">
+      <img src="img/kuma-value.png">
+      <h3>Value</h3>
+      <p>双方が笑顔になれる社会をつくる。</p>
+    </div>
+  </section>
+
+  <section id="product">
+    <h2>商品紹介</h2>
+    <img src="img/kuma-product.png" class="product-img">
+    <p>ケアモコのもこもこクッションは、医療・介護・保育・障がいの4領域で使える設計です。</p>
+  </section>
+
+  <section id="reviews">
+    <h2>お客様の声</h2>
+    <div id="reviews-list">読み込み中…</div>
+  </section>
+
+</main>
+
+<footer>© ケアモコ CareMoko</footer>
+
+<script>
+  function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+  }
+
+  fetch("data/reviews.json")
+    .then(res => res.json())
+    .then(data => {
+      const box = document.getElementById("reviews-list");
+      box.innerHTML = "";
+      if (!data.length) {
+        box.innerHTML = "<p>まだお客様の声がありません。</p>";
+        return;
+      }
+      data.forEach(r => {
+        const div = document.createElement("div");
+        div.className = "review-card";
+        div.innerHTML = `<strong>${r.name}</strong><p>${r.text}</p>`;
+        box.appendChild(div);
+      });
+    });
+</script>
+
+</body>
+</html>
